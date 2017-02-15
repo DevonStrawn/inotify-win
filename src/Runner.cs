@@ -163,6 +163,7 @@ namespace De.Thekid.INotify
         {
             while (Console.ReadLine() != null);
             _stopMonitoring = true;
+            Console.Error.WriteLine("StdInOpen()");
             _stopMonitoringEvent.Set();
         }
 
@@ -178,9 +179,11 @@ namespace De.Thekid.INotify
                     _threads.Add(t);
                 }
 
-                var stdInOpen = new Thread(new ThreadStart(StdInOpen));
-                stdInOpen.IsBackground = true;
-                stdInOpen.Start();
+                if (!Console.IsInputRedirected) {
+                    var stdInOpen = new Thread(new ThreadStart(StdInOpen));
+                    stdInOpen.IsBackground = true;
+                    stdInOpen.Start();
+                }
 
                 _stopMonitoringEvent.Wait();
 
